@@ -4,83 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.TextButton
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
-import fr.esgi.taskflow.domain.model.Task
-
-private val sampleTasks = listOf(
-    Task(1, "Préparer le cours", "Relire le plan de séance"),
-    Task(2, "Créer le projet", "Configurer Android Studio"),
-    Task(3, "Faire une pause", "Prendre un café"),
-)
+import fr.esgi.taskflow.navigation.TaskFlowApp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            MaterialTheme {
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    val tasks = remember { mutableStateListOf(*sampleTasks.toTypedArray()) }
-                    val showOpenOnly = remember { androidx.compose.runtime.mutableStateOf(false) }
-                    val title = remember { androidx.compose.runtime.mutableStateOf("") }
-                    val description = remember { androidx.compose.runtime.mutableStateOf("") }
-                    val titleError = remember { androidx.compose.runtime.mutableStateOf(false) }
-                    Column(
-                        modifier = Modifier.fillMaxSize().padding(24.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                        horizontalAlignment = Alignment.Start,
-                    ) {
-                        Text("TaskFlow", style = MaterialTheme.typography.headlineMedium)
-                        Text("Organisez votre travail, une tâche à la fois.")
-                        OutlinedTextField(value = title.value, onValueChange = { title.value = it; titleError.value = false }, label = { Text("Titre") }, isError = titleError.value, singleLine = true)
-                        OutlinedTextField(value = description.value, onValueChange = { description.value = it }, label = { Text("Description") })
-                        if (titleError.value) Text("Le titre est obligatoire", color = MaterialTheme.colorScheme.error)
-                        Button(onClick = {
-                            val cleanTitle = title.value.trim()
-                            if (cleanTitle.isEmpty()) titleError.value = true
-                            else {
-                                tasks.add(Task((tasks.maxOfOrNull { it.id } ?: 0) + 1, cleanTitle, description.value.trim()))
-                                title.value = ""
-                                description.value = ""
-                            }
-                        }) { Text("Ajouter la tâche") }
-                        TextButton(onClick = { showOpenOnly.value = !showOpenOnly.value }) {
-                            Text(if (showOpenOnly.value) "Afficher toutes" else "Filtrer les tâches ouvertes")
-                        }
-                        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            items(tasks.filter { !showOpenOnly.value || !it.completed }, key = { it.id }) { task ->
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Checkbox(
-                                        checked = task.completed,
-                                        onCheckedChange = { checked ->
-                                            val index = tasks.indexOfFirst { it.id == task.id }
-                                            if (index >= 0) tasks[index] = task.copy(completed = checked)
-                                        },
-                                    )
-                                    Text("${task.title} — ${task.description}")
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        setContent { MaterialTheme { TaskFlowApp() } }
     }
 }
