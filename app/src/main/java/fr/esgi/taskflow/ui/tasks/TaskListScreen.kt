@@ -1,22 +1,28 @@
 package fr.esgi.taskflow.ui.tasks
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import fr.esgi.taskflow.domain.model.Task
+import fr.esgi.taskflow.ui.components.ProgressSummary
+import fr.esgi.taskflow.ui.components.TaskCard
 
 @Composable
 fun TaskListScreen(
@@ -24,29 +30,47 @@ fun TaskListScreen(
     onOpenTask: (Int) -> Unit,
     onSetCompleted: (Int, Boolean) -> Unit,
     onSetImportant: (Int, Boolean) -> Unit,
+    onCreateTask: () -> Unit,
 ) {
-    if (tasks.isEmpty()) {
-        Text("Aucune tâche à afficher", modifier = Modifier.padding(24.dp))
-        return
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 28.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp),
+    ) {
+        item { ProgressSummary(tasks) }
+        if (tasks.isEmpty()) {
+            item { EmptyTasks(onCreateTask) }
+        } else {
+            items(tasks, key = { it.id }) { task ->
+                TaskCard(
+                    task = task,
+                    onOpen = { onOpenTask(task.id) },
+                    onSetCompleted = { onSetCompleted(task.id, it) },
+                    onToggleImportant = { onSetImportant(task.id, !task.important) },
+                )
+            }
+        }
     }
-    LazyColumn {
-        items(tasks, key = { it.id }) { task ->
-            Column {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    Checkbox(
-                        checked = task.completed,
-                        onCheckedChange = { onSetCompleted(task.id, it) },
-                    )
-                    Text(task.title, modifier = Modifier.weight(1f).clickable { onOpenTask(task.id) })
-                    TextButton(onClick = { onSetImportant(task.id, !task.important) }) {
-                        Text(if (task.important) "★" else "☆")
-                    }
-                }
-                HorizontalDivider()
+}
+
+@Composable
+private fun EmptyTasks(onCreateTask: () -> Unit) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surface,
+        shape = MaterialTheme.shapes.large,
+    ) {
+        Column(
+            modifier = Modifier.padding(28.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            Icon(Icons.AutoMirrored.Filled.List, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+            Text("Tout commence ici", style = MaterialTheme.typography.titleLarge)
+            Text("Ajoutez une tâche pour avancer à votre rythme.", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Button(onClick = onCreateTask) {
+                Icon(Icons.Default.Add, contentDescription = null)
+                Text("Créer une tâche", modifier = Modifier.padding(start = 8.dp))
             }
         }
     }

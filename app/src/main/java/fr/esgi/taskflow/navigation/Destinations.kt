@@ -11,8 +11,8 @@ object Destinations {
     fun detail(taskId: Int) = "detail/$taskId"
 }
 
-enum class HomeTab(val route: String, val label: String, val symbol: String) {
-    ALL(Destinations.ALL, "Toutes", "☷"),
-    CREATE(Destinations.CREATE, "Créer", "+"),
-    IMPORTANT(Destinations.IMPORTANT, "Importantes", "★"),
+enum class HomeTab(val route: String, val label: String) {
+    ALL(Destinations.ALL, "Toutes"),
+    CREATE(Destinations.CREATE, "Créer"),
+    IMPORTANT(Destinations.IMPORTANT, "Importantes"),
 }
