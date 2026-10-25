@@ -11,11 +11,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.TextButton
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import fr.esgi.taskflow.domain.model.Task
 
 private val sampleTasks = listOf(
@@ -30,6 +36,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
+                    val tasks = remember { mutableStateListOf(*sampleTasks.toTypedArray()) }
+                    val showOpenOnly = remember { androidx.compose.runtime.mutableStateOf(false) }
                     Column(
                         modifier = Modifier.fillMaxSize().padding(24.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -38,9 +46,21 @@ class MainActivity : ComponentActivity() {
                         Text("TaskFlow", style = MaterialTheme.typography.headlineMedium)
                         Text("Organisez votre travail, une tâche à la fois.")
                         Button(onClick = {}) { Text("Nouvelle tâche") }
+                        TextButton(onClick = { showOpenOnly.value = !showOpenOnly.value }) {
+                            Text(if (showOpenOnly.value) "Afficher toutes" else "Filtrer les tâches ouvertes")
+                        }
                         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            items(sampleTasks, key = { it.id }) { task ->
-                                Text("${task.title} — ${task.description}")
+                            items(tasks.filter { !showOpenOnly.value || !it.completed }, key = { it.id }) { task ->
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Checkbox(
+                                        checked = task.completed,
+                                        onCheckedChange = { checked ->
+                                            val index = tasks.indexOfFirst { it.id == task.id }
+                                            if (index >= 0) tasks[index] = task.copy(completed = checked)
+                                        },
+                                    )
+                                    Text("${task.title} — ${task.description}")
+                                }
                             }
                         }
                     }
