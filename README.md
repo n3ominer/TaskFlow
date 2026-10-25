@@ -14,4 +14,8 @@ gradle assembleDebug
 
 Le wrapper Gradle standard n'a pas pu être généré dans cet environnement : aucun Gradle local n'est installé et l'accès réseau à `services.gradle.org` échoue en résolution DNS. Voir [docs/VALIDATION.md](docs/VALIDATION.md).
 
-La branche `main` contient le squelette. Les corrections sont sur `correction/feature-01` à `correction/feature-08`, chacune issue de la précédente. La carte du cours et les neuf fiches sont disponibles après `git switch correction/feature-08`.
+La branche `main` contient le squelette. Les corrections sont sur `correction/feature-01` à `correction/feature-08`, chacune issue de la précédente. La branche 08 contient [la carte du cours](docs/COURSE_MAP.md) et les neuf fiches de séance. Pour dérouler les corrections :
+
+```sh
+git switch correction/feature-08
+```
