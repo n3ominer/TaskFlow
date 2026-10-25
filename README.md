@@ -4,14 +4,14 @@ Projet pédagogique Android en Kotlin et Jetpack Compose. Le dépôt suit les s�
 
 ## Environnement
 
-- Android Studio récent, Android SDK Platform 36
+- Android Studio récent, Android SDK Platform 37
 - Java 17
-- Gradle 8.13 (version utilisée par le projet)
+- Gradle via le wrapper fourni dans ce dépôt
 
 ```sh
-gradle assembleDebug
+./gradlew assembleDebug
 ```
 
-Le wrapper Gradle standard n'a pas pu être généré dans cet environnement : aucun Gradle local n'est installé et l'accès réseau à `services.gradle.org` échoue en résolution DNS. Voir [docs/VALIDATION.md](docs/VALIDATION.md).
+Le fichier `gradle.properties` active AndroidX pour toutes les branches de correction. Le projet utilise `compileSdk 37`, AGP 9.3.1, Gradle 9.6.0 et le BOM Compose 2026.09.00. Les sorties Gradle et Android Studio sont exclues par `.gitignore`. Voir [docs/VALIDATION.md](docs/VALIDATION.md) pour les résultats de build.
 
 La branche `main` contient le squelette. Les corrections sont sur `correction/feature-01` à `correction/feature-08`, chacune issue de la précédente. La carte du cours et les neuf fiches sont disponibles après `git switch correction/feature-08`.
