@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextButton
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +39,9 @@ class MainActivity : ComponentActivity() {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     val tasks = remember { mutableStateListOf(*sampleTasks.toTypedArray()) }
                     val showOpenOnly = remember { androidx.compose.runtime.mutableStateOf(false) }
+                    val title = remember { androidx.compose.runtime.mutableStateOf("") }
+                    val description = remember { androidx.compose.runtime.mutableStateOf("") }
+                    val titleError = remember { androidx.compose.runtime.mutableStateOf(false) }
                     Column(
                         modifier = Modifier.fillMaxSize().padding(24.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -45,7 +49,18 @@ class MainActivity : ComponentActivity() {
                     ) {
                         Text("TaskFlow", style = MaterialTheme.typography.headlineMedium)
                         Text("Organisez votre travail, une tâche à la fois.")
-                        Button(onClick = {}) { Text("Nouvelle tâche") }
+                        OutlinedTextField(value = title.value, onValueChange = { title.value = it; titleError.value = false }, label = { Text("Titre") }, isError = titleError.value, singleLine = true)
+                        OutlinedTextField(value = description.value, onValueChange = { description.value = it }, label = { Text("Description") })
+                        if (titleError.value) Text("Le titre est obligatoire", color = MaterialTheme.colorScheme.error)
+                        Button(onClick = {
+                            val cleanTitle = title.value.trim()
+                            if (cleanTitle.isEmpty()) titleError.value = true
+                            else {
+                                tasks.add(Task((tasks.maxOfOrNull { it.id } ?: 0) + 1, cleanTitle, description.value.trim()))
+                                title.value = ""
+                                description.value = ""
+                            }
+                        }) { Text("Ajouter la tâche") }
                         TextButton(onClick = { showOpenOnly.value = !showOpenOnly.value }) {
                             Text(if (showOpenOnly.value) "Afficher toutes" else "Filtrer les tâches ouvertes")
                         }
