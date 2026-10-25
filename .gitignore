@@ -1,0 +1,15 @@
+# Android Studio et Gradle
+.gradle/
+.kotlin/
+**/build/
+local.properties
+.idea/
+*.iml
+
+# Sorties locales
+.cxx/
+.externalNativeBuild/
+captures/
+*.apk
+*.aab
+.DS_Store
