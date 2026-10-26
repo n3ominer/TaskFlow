@@ -7,6 +7,7 @@ local.properties
 *.iml
 
 # Sorties locales
+/docs/
 .cxx/
 .externalNativeBuild/
 captures/
