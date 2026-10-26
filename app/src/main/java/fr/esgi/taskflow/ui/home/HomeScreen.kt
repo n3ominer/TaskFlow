@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -30,7 +31,7 @@ fun HomeScreen(
             Text(
                 title,
                 style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.fillMaxWidth().padding(20.dp),
+                modifier = Modifier.fillMaxWidth().statusBarsPadding().padding(20.dp),
             )
         },
         bottomBar = {
