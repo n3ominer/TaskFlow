@@ -12,6 +12,6 @@ Projet pédagogique Android en Kotlin et Jetpack Compose. Le dépôt suit les s�
 ./gradlew assembleDebug
 ```
 
-Le fichier `gradle.properties` active AndroidX pour toutes les branches de correction. Le projet utilise `compileSdk 37`, AGP 9.3.1, Gradle 9.6.0 et le BOM Compose 2026.09.00. Les sorties Gradle et Android Studio sont exclues par `.gitignore`. Voir [docs/VALIDATION.md](docs/VALIDATION.md) pour les résultats de build.
+Le fichier `gradle.properties` active AndroidX. Le projet utilise `compileSdk 37`, AGP 9.3.1, Gradle 9.6.0 et le BOM Compose 2026.09.00. Les sorties Gradle et Android Studio sont exclues par `.gitignore`.
 
-La branche `main` contient le squelette. Les corrections sont sur `correction/feature-01` à `correction/feature-08`, chacune issue de la précédente. La carte du cours et les neuf fiches sont disponibles après `git switch correction/feature-08`.
+Le cours démarre avec le squelette de `main`. Les corrections seront intégrées progressivement après chaque séance.
