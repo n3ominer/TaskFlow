@@ -7,3 +7,13 @@ data class Task(
     val completed: Boolean = false,
     val important: Boolean = false,
 )
+
+/**
+ {
+    "id": 1234,
+    "title": "Todoz",
+    "description": "Description",
+    "completed": false,
+    "important": true
+ }
+ */
