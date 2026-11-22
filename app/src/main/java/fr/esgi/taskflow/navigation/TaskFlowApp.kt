@@ -1,6 +1,7 @@
 package fr.esgi.taskflow.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -8,18 +9,29 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import fr.esgi.taskflow.data.network.ApiClient
+import fr.esgi.taskflow.data.repository.RemoteTasksRepository
 import fr.esgi.taskflow.ui.detail.TaskDetailScreen
 import fr.esgi.taskflow.ui.home.HomeScreen
 import fr.esgi.taskflow.ui.login.LoginScreen
 import fr.esgi.taskflow.ui.tasks.CreateTaskScreen
 import fr.esgi.taskflow.ui.tasks.TaskListScreen
 import fr.esgi.taskflow.ui.tasks.TaskViewModel
+import fr.esgi.taskflow.ui.tasks.TaskViewModelFactory
 
 @Composable
 fun TaskFlowApp() {
     val navController = rememberNavController()
-    val taskViewModel: TaskViewModel = viewModel()
+    val repository = remember { RemoteTasksRepository(ApiClient.createTaskApiService()) }
+    val taskViewModel: TaskViewModel = viewModel(
+        factory = remember(repository) {
+            TaskViewModelFactory(repository)
+        }
+    )
+
     val tasks = taskViewModel.uiState.collectAsStateWithLifecycle().value.tasks
+
+
     val openTask: (Int) -> Unit = { taskId -> navController.navigate(Destinations.detail(taskId)) }
     val selectTab: (HomeTab) -> Unit = { tab ->
         navController.navigate(tab.route) {
@@ -40,15 +52,22 @@ fun TaskFlowApp() {
         }
         composable(Destinations.ALL) {
             HomeScreen(selectedTab = HomeTab.ALL, onSelectTab = selectTab) {
-                TaskListScreen(tasks, openTask, taskViewModel::setCompleted, taskViewModel::setImportant)
+                TaskListScreen(
+                    tasks,
+                    openTask,
+                    taskViewModel::setCompleted,
+                    taskViewModel::setImportant
+                )
             }
         }
         composable(Destinations.CREATE) {
             HomeScreen(selectedTab = HomeTab.CREATE, onSelectTab = selectTab) {
-                CreateTaskScreen(onCreateTask = { title, description, important ->
-                    taskViewModel.addTask(title, description, important)
-                    selectTab(HomeTab.ALL)
-                })
+                CreateTaskScreen(
+                    onCreateTask = { title, description, important ->
+                        taskViewModel.addTask(title, description, important)
+                        selectTab(HomeTab.ALL)
+                    }
+                )
             }
         }
         composable(Destinations.IMPORTANT) {
