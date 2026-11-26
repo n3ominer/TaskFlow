@@ -12,7 +12,13 @@ class InMemoryTaskRepository: TaskRepository {
     // State spécifique à la liste de Task
     // Il est observé par le ViewModel, pour mettre à jour cette donné spécifique
     // dans son UiState global
-    private val _tasks = MutableStateFlow(listOf<Task>())
+    private val _tasks = MutableStateFlow(
+        listOf(
+            Task(1, "Préparer le cours", "Relire le plan de séance"),
+            Task(2, "Créer le projet", "Configurer Android Studio", important = true),
+            Task(3, "Faire une pause", "Prendre un café"),
+        )
+    )
 
     override suspend fun refresh() = Unit
 

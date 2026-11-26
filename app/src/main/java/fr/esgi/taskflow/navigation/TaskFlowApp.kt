@@ -9,8 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import fr.esgi.taskflow.data.network.ApiClient
-import fr.esgi.taskflow.data.repository.RemoteTasksRepository
+import fr.esgi.taskflow.data.repository.InMemoryTaskRepository
 import fr.esgi.taskflow.ui.detail.TaskDetailScreen
 import fr.esgi.taskflow.ui.home.HomeScreen
 import fr.esgi.taskflow.ui.login.LoginScreen
@@ -22,7 +21,7 @@ import fr.esgi.taskflow.ui.tasks.TaskViewModelFactory
 @Composable
 fun TaskFlowApp() {
     val navController = rememberNavController()
-    val repository = remember { RemoteTasksRepository(ApiClient.createTaskApiService()) }
+    val repository = remember { InMemoryTaskRepository() }
     val taskViewModel: TaskViewModel = viewModel(
         factory = remember(repository) {
             TaskViewModelFactory(repository)
