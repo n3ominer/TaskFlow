@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -28,6 +29,13 @@ fun LoginScreen(onLogin: () -> Unit) {
     ) {
         Text("TaskFlow", style = MaterialTheme.typography.headlineLarge)
         Text("Connexion de démonstration", modifier = Modifier.padding(bottom = 24.dp))
+
+        DropdownMenu(
+            users
+        ) {
+
+        }
+
         OutlinedTextField(
             value = email.value,
             onValueChange = { email.value = it; error.value = false },

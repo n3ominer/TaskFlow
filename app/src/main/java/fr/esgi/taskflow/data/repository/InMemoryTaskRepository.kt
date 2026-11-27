@@ -20,10 +20,9 @@ class InMemoryTaskRepository: TaskRepository {
         )
     )
 
-    override suspend fun refresh() = Unit
-
     override val tasks: StateFlow<List<Task>> = _tasks.asStateFlow()
 
+    override suspend fun refresh() = Unit
     override fun addTask(
         title: String,
         description: String,

@@ -2,6 +2,14 @@ package fr.esgi.taskflow.data.network
 
 import retrofit2.http.GET
 
+// Retrofit implémente l'interface, pour fournir une implementation concrète à la fonciton getAllTodos()
+// class TaskApiService(): TaskApiService {
+/*
+    override fun getAllTodos(): List<TaskDto> {
+        // Code pour faire le get + construction de la requete HTT
+    }
+
+ */
 interface TaskApiService {
 
     // GET ALL TASK ENDPOINT

@@ -10,6 +10,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import fr.esgi.taskflow.data.repository.InMemoryTaskRepository
+import fr.esgi.taskflow.data.repository.TaskRepoSource
+import fr.esgi.taskflow.data.repository.TasksRepositoryFactory
 import fr.esgi.taskflow.ui.detail.TaskDetailScreen
 import fr.esgi.taskflow.ui.home.HomeScreen
 import fr.esgi.taskflow.ui.login.LoginScreen
@@ -19,9 +21,11 @@ import fr.esgi.taskflow.ui.tasks.TaskViewModel
 import fr.esgi.taskflow.ui.tasks.TaskViewModelFactory
 
 @Composable
-fun TaskFlowApp() {
+fun TaskFlowNavHost() {
     val navController = rememberNavController()
-    val repository = remember { InMemoryTaskRepository() }
+
+    val repository = remember { TasksRepositoryFactory.create(TaskRepoSource.REMOTE) }
+
     val taskViewModel: TaskViewModel = viewModel(
         factory = remember(repository) {
             TaskViewModelFactory(repository)
@@ -50,6 +54,7 @@ fun TaskFlowApp() {
             })
         }
         composable(Destinations.ALL) {
+            taskViewModel.getAllTodos()
             HomeScreen(selectedTab = HomeTab.ALL, onSelectTab = selectTab) {
                 TaskListScreen(
                     tasks,
