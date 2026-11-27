@@ -29,13 +29,6 @@ fun LoginScreen(onLogin: () -> Unit) {
     ) {
         Text("TaskFlow", style = MaterialTheme.typography.headlineLarge)
         Text("Connexion de démonstration", modifier = Modifier.padding(bottom = 24.dp))
-
-        DropdownMenu(
-            users
-        ) {
-
-        }
-
         OutlinedTextField(
             value = email.value,
             onValueChange = { email.value = it; error.value = false },
