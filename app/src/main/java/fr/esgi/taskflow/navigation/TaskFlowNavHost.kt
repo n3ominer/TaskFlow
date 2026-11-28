@@ -1,7 +1,11 @@
 package fr.esgi.taskflow.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -9,12 +13,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import fr.esgi.taskflow.data.network.ApiClient
 import fr.esgi.taskflow.data.repository.InMemoryTaskRepository
+import fr.esgi.taskflow.data.repository.RemoteUserRepository
 import fr.esgi.taskflow.data.repository.TaskRepoSource
 import fr.esgi.taskflow.data.repository.TasksRepositoryFactory
+import fr.esgi.taskflow.domain.model.User
+import fr.esgi.taskflow.domain.usecase.GetUsersUseCase
 import fr.esgi.taskflow.ui.detail.TaskDetailScreen
 import fr.esgi.taskflow.ui.home.HomeScreen
 import fr.esgi.taskflow.ui.login.LoginScreen
+import fr.esgi.taskflow.ui.login.LoginViewModel
+import fr.esgi.taskflow.ui.login.LoginViewModelFactory
 import fr.esgi.taskflow.ui.tasks.CreateTaskScreen
 import fr.esgi.taskflow.ui.tasks.TaskListScreen
 import fr.esgi.taskflow.ui.tasks.TaskViewModel
@@ -24,13 +34,21 @@ import fr.esgi.taskflow.ui.tasks.TaskViewModelFactory
 fun TaskFlowNavHost() {
     val navController = rememberNavController()
 
-    val repository = remember { TasksRepositoryFactory.create(TaskRepoSource.REMOTE) }
+    val taskRepository = remember { TasksRepositoryFactory.create(TaskRepoSource.REMOTE) }
 
     val taskViewModel: TaskViewModel = viewModel(
-        factory = remember(repository) {
-            TaskViewModelFactory(repository)
+        factory = remember(taskRepository) {
+            TaskViewModelFactory(taskRepository)
         }
     )
+
+    val userRepository = remember { RemoteUserRepository(ApiClient.createUserApiService()) }
+    val loginViewModel: LoginViewModel = viewModel(
+        factory = remember(userRepository) { LoginViewModelFactory(userRepository) }
+    )
+
+    var selectedUser by remember { mutableStateOf<User?>(null) }
+
 
     val tasks = taskViewModel.uiState.collectAsStateWithLifecycle().value.tasks
 
@@ -46,15 +64,26 @@ fun TaskFlowNavHost() {
 
     NavHost(navController = navController, startDestination = Destinations.LOGIN) {
         composable(Destinations.LOGIN) {
-            LoginScreen(onLogin = {
-                navController.navigate(Destinations.ALL) {
-                    popUpTo(Destinations.LOGIN) { inclusive = true }
-                    launchSingleTop = true
+            LoginScreen(
+                viewModel = loginViewModel,
+                onLogin = { user ->
+                    selectedUser = user
+                    navController.navigate(Destinations.ALL) {
+                        popUpTo(Destinations.LOGIN) { inclusive = true }
+                        launchSingleTop = true
+                    }
                 }
-            })
+            )
         }
         composable(Destinations.ALL) {
-            taskViewModel.getAllTodos()
+            LaunchedEffect(
+                selectedUser?.id
+            ) {
+                selectedUser?.let { taskViewModel.getAllTodos(it.id) }
+            }
+
+            // taskViewModel.getAllTodos() A NE PAS FAIRE
+
             HomeScreen(selectedTab = HomeTab.ALL, onSelectTab = selectTab) {
                 TaskListScreen(
                     tasks,
