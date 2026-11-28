@@ -1,17 +1,21 @@
 package fr.esgi.taskflow.data.network
 
+import fr.esgi.taskflow.data.network.services.TaskApiService
+import fr.esgi.taskflow.data.network.services.UserApiService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 
 object ApiClient {
     const val BASE_URL = "https://jsonplaceholder.typicode.com/"
 
-    fun createTaskApiService(): TaskApiService = Retrofit.Builder()
+    private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create()) // Map JSON -> Data class
         .build()
-        .create(TaskApiService::class.java)
 
-    // fun createUserApiService ...
+    fun createTaskApiService(): TaskApiService =
+        retrofit.create(TaskApiService::class.java)
+
+    fun createUserApiService(): UserApiService =
+        retrofit.create(UserApiService::class.java)
 }

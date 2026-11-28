@@ -1,5 +1,6 @@
-package fr.esgi.taskflow.data.network
+package fr.esgi.taskflow.data.network.services
 
+import fr.esgi.taskflow.data.network.TaskDto
 import retrofit2.http.GET
 
 // Retrofit implémente l'interface, pour fournir une implementation concrète à la fonciton getAllTodos()
