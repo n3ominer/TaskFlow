@@ -1,6 +1,6 @@
 package fr.esgi.taskflow.domain.usecase
 
-import fr.esgi.taskflow.data.TaskRepository
+import fr.esgi.taskflow.domain.repositories.TaskRepository
 import fr.esgi.taskflow.domain.model.Task
 import kotlinx.coroutines.flow.StateFlow
 
@@ -10,7 +10,7 @@ class ObserveTasksUseCase(private val  repository: TaskRepository) {
 }
 
 class GetAllTodosUseCase(private val repository: TaskRepository) {
-    suspend operator fun invoke() = repository.refresh()
+    suspend operator fun invoke(userId: Int) = repository.refresh(userId)
 }
 
 // Usecase CREATION TASK

@@ -1,4 +1,4 @@
-package fr.esgi.taskflow.data
+package fr.esgi.taskflow.domain.repositories
 
 import fr.esgi.taskflow.domain.model.Task
 import kotlinx.coroutines.flow.StateFlow
@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 interface TaskRepository {
     // _tasks --> MutableStateFlow
 
-    suspend fun refresh()
+    suspend fun refresh(userId: Int)
 
     val tasks: StateFlow<List<Task>>
     fun addTask(title: String, description: String, important: Boolean) // -> Envoi à une API

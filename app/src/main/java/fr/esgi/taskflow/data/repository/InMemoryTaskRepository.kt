@@ -1,6 +1,6 @@
 package fr.esgi.taskflow.data.repository
 
-import fr.esgi.taskflow.data.TaskRepository
+import fr.esgi.taskflow.domain.repositories.TaskRepository
 import fr.esgi.taskflow.domain.model.Task
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -8,21 +8,23 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlin.collections.plus
 
+// MOCk -> false data
 class InMemoryTaskRepository: TaskRepository {
     // State spécifique à la liste de Task
     // Il est observé par le ViewModel, pour mettre à jour cette donné spécifique
     // dans son UiState global
     private val _tasks = MutableStateFlow(
         listOf(
-            Task(1, "Préparer le cours", "Relire le plan de séance"),
-            Task(2, "Créer le projet", "Configurer Android Studio", important = true),
-            Task(3, "Faire une pause", "Prendre un café"),
+            Task(userId = 10, 1, "Préparer le cours", "Relire le plan de séance"),
+            Task(userId = 10, 2, "Créer le projet", "Configurer Android Studio", important = true),
+            Task(userId = 10, 3, "Faire une pause", "Prendre un café"),
         )
     )
 
     override val tasks: StateFlow<List<Task>> = _tasks.asStateFlow()
 
-    override suspend fun refresh() = Unit
+    override suspend fun refresh(userId: Int) = Unit
+
     override fun addTask(
         title: String,
         description: String,
@@ -32,7 +34,13 @@ class InMemoryTaskRepository: TaskRepository {
         if (cleanTitle.isEmpty()) return
         _tasks.update { state ->
             val nextId = (state.maxOfOrNull { it.id } ?: 0) + 1
-            state + Task(nextId, cleanTitle, description.trim(), important = important)
+            state + Task(
+                userId = 10,
+                id = nextId,
+                title = cleanTitle,
+                description = description.trim(),
+                important = important
+            )
         }
     }
 

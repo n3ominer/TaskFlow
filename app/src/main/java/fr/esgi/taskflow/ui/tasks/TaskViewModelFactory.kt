@@ -2,7 +2,7 @@ package fr.esgi.taskflow.ui.tasks
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import fr.esgi.taskflow.data.TaskRepository
+import fr.esgi.taskflow.domain.repositories.TaskRepository
 import fr.esgi.taskflow.domain.usecase.AddTaskUseCase
 import fr.esgi.taskflow.domain.usecase.GetAllTodosUseCase
 import fr.esgi.taskflow.domain.usecase.ObserveTasksUseCase

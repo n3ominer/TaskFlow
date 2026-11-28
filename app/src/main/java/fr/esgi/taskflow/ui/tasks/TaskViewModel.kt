@@ -35,9 +35,10 @@ class TaskViewModel(
     }
 
 
-    fun getAllTodos() {
+    fun getAllTodos(userId: Int) {
+        // Quel est le user id ?
         viewModelScope.launch {
-            getAllTodosUseCase()
+            getAllTodosUseCase(userId)
         }
     }
     fun addTask(title: String, description: String, important: Boolean) =

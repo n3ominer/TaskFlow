@@ -1,7 +1,7 @@
 package fr.esgi.taskflow.data.repository
 
-import fr.esgi.taskflow.data.TaskRepository
-import fr.esgi.taskflow.data.network.TaskApiService
+import fr.esgi.taskflow.domain.repositories.TaskRepository
+import fr.esgi.taskflow.data.network.services.TaskApiService
 import fr.esgi.taskflow.data.network.toDomainOrNull
 import fr.esgi.taskflow.domain.model.Task
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,8 +21,11 @@ class RemoteTaskRepository(private val taskService: TaskApiService): TaskReposit
     override val tasks: StateFlow<List<Task>> = _task.asStateFlow()
 
     // La fonction qui va nous permettre de faire l'appel HTTP GET vers le endpoint dans le service
-    override suspend fun refresh() {
-        val fetched = taskService.getAllTodos().mapNotNull { it.toDomainOrNull() }
+    override suspend fun refresh(userId: Int) {
+        val fetched = taskService
+            .getAllTodos()
+            .mapNotNull { it.toDomainOrNull() }
+            .filter { it.userId == userId }
         remoteTasks = fetched
 
         // Mettre à jour l'état et notifier pour recomposition
@@ -32,7 +35,8 @@ class RemoteTaskRepository(private val taskService: TaskApiService): TaskReposit
     override fun addTask(
         title: String,
         description: String,
-        important: Boolean
+        important: Boolean,
+        //userId: Int = 0
     ) {
         // Logique d'ajout
         val cleanTitle = title.trim()
@@ -40,9 +44,10 @@ class RemoteTaskRepository(private val taskService: TaskApiService): TaskReposit
         // -10 -> -11
         val nextId = (sessionTask.minOfOrNull { it.id } ?: 0) - 1
         sessionTask = sessionTask + Task(
-            nextId,
-            cleanTitle,
-            description.trim(),
+            userId = 0, // en attente de userId
+            id = nextId,
+            title = cleanTitle,
+            description = description.trim(),
             important = important
         )
         // Mettre à jour l'état et notifier pour recomposition

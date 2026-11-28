@@ -24,6 +24,7 @@ fun TaskzDtoItem.toDomainOrNull(): Task? {
     val validTitle = title.takeIf { it.isNotBlank() } ?: return null
 
     return Task(
+        userId = userId,
         id = validId,
         title = validTitle,
         description = "",

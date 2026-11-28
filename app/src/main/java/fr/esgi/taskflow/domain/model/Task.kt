@@ -1,6 +1,7 @@
 package fr.esgi.taskflow.domain.model
 
 data class Task(
+    val userId: Int,
     val id: Int,
     val title: String,
     val description: String,
